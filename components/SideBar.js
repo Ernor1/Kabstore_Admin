@@ -3,45 +3,67 @@ import { faCube, faLayerGroup, faTableLayout, faUsers } from "@fortawesome/free-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Collapse } from "react-bootstrap";
-
-export default function SideBar() {
+import Icon from '../assets/img/favicon.png'
+import Image from "next/image";
+import { Trello, Layers, Layout, Box, Users, User } from 'react-feather';
+import Link from "next/link";
+import { useRouter } from "next/router";
+export default function SideBar({ name, subName }) {
+    const router = useRouter();
+    const query = router.query;
     const sideContent = [
         {
             name: "Catalog",
-            icon: <FontAwesomeIcon icon={faLayerGroup} />,
+            icon: <Layers />,
             subs: ["Categories", "Products"]
         },
         {
             name: "Design",
-            icon: <FontAwesomeIcon icon={faTrello} />,
+            icon: <Layout />,
             subs: ["Banners", "Slides"]
         },
         {
             name: "Sales",
-            icon: <FontAwesomeIcon icon={faCube} />,
+            icon: <Box />,
             subs: ["Orders", "Payments"]
         },
         {
             name: "Customers",
-            icon: <FontAwesomeIcon icon={faUsers} />,
+            icon: <Users />,
             subs: ["Add New", "Report"]
         }
     ];
+    const onRouteClick = (name, sub) => {
+        router.push({
+            pathname: `/${sub.toLowerCase()}`,
+            query: {
+                name: name,
+                subName: sub
+            },
+        }, `/${sub.toLowerCase()}`, { shallow: true, as: router.asPath }, { scroll: false })
+    }
 
     const [active, setActive] = useState(-1);
+    const [page, setPage] = useState("Dashboard")
+    const handlePage = (page) => {
+        setPage(page)
+    }
 
     const handleClick = (id) => {
         setActive((prevActive) => (prevActive === id ? -1 : id));
     };
+    console.log("Trying to query", query.name);
 
     return (
         <div className="sidebar-wrapper sidebar-theme">
             <nav id="sidebar">
                 <ul className="navbar-nav theme-brand flex-row text-center">
                     <li className="nav-item theme-logo">
-                        <a href="dashboard">
-                            <img src="assets/img/favicon.png" className="navbar-logo" alt="logo" />
-                        </a>
+                        <Link href={{
+                            pathname: "/"
+                        }}>
+                            <Image src={Icon} alt="logo" className="navbar-logo" />
+                        </Link>
                     </li>
 
                     <li className="nav-item theme-text">
@@ -69,11 +91,11 @@ export default function SideBar() {
                 </ul>
 
                 <div className="shadow-bottom"></div>
-                <ul className="list-unstyled menu-categories" id="accordionExample">
-                    <li className="menu dashboard">
-                        <a href="dashboard" aria-expanded="false" className="dropdown-toggle">
+                <ul className="list-unstyled menu-categories " id="accordionExample">
+                    <li className={`menu dashboard ${query.name == "" ? "active" : ""}`}>
+                        <a href="/" aria-expanded="false" className="dropdown-toggle text-decoration-none">
                             <div>
-                                <FontAwesomeIcon icon={faTrello} />
+                                <Trello />
                                 <span>Dashboard</span>
                             </div>
                         </a>
@@ -81,14 +103,13 @@ export default function SideBar() {
                     {sideContent.map((content, i) => {
                         console.log(content.name);
                         return (
-                            <li key={i} className="menu catalog" onClick={() => handleClick(i)}>
+                            <li key={i} className={`menu catalog ${query.name == content.name ? "active" : ""}`} style={{ textDecoration: "none" }} onClick={() => handleClick(i)}>
                                 <a
-                                    href="#catalog"
                                     data-toggle="collapse"
                                     aria-expanded={active === i ? "true" : "false"}
-                                    className="dropdown-toggle collapsed"
+                                    className="dropdown-toggle collapsed text-decoration-none  "
                                 >
-                                    <div>
+                                    <div className=" ">
                                         {content.icon}
                                         <span>{content.name}</span>
                                     </div>
@@ -114,8 +135,10 @@ export default function SideBar() {
                                         <ul className="submenu list-unstyled" id="catalog" data-parent="#accordionExample">
                                             {content.subs.map((sub, j) => {
                                                 return (
-                                                    <li className={sub} key={j}>
-                                                        <a href={sub}>{sub}</a>
+                                                    <li className={sub + `${sub === query.subName ? " active" : ""}`} key={j}>
+                                                        <a className="text-decoration-none" onClick={() => {
+                                                            onRouteClick(content.name, sub)
+                                                        }}>{sub}</a>
                                                     </li>
                                                 );
                                             })}
@@ -127,6 +150,6 @@ export default function SideBar() {
                     })}
                 </ul>
             </nav>
-        </div>
+        </div >
     );
 }
