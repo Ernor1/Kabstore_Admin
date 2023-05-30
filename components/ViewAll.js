@@ -11,35 +11,80 @@ import Stack from '@mui/material/Stack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useState, useEffect } from 'react';
+import { styled, alpha } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import Menu, { MenuProps } from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import EditIcon from '@mui/icons-material/Edit';
+import Divider from '@mui/material/Divider';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+const StyledMenu = styled((props) => (
+    <Menu
+        elevation={0}
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+        }}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+        }}
+        {...props}
+    />
+))(({ theme }) => ({
+    '& .MuiPaper-root': {
+        borderRadius: 6,
+        marginTop: theme.spacing(1),
+        minWidth: 180,
+        color:
+            theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+        boxShadow:
+            'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+        '& .MuiMenu-list': {
+            padding: '4px 0',
+        },
+        '& .MuiMenuItem-root': {
+            '& .MuiSvgIcon-root': {
+                fontSize: 18,
+                color: theme.palette.text.secondary,
+                marginRight: theme.spacing(1.5),
+            },
+            '&:active': {
+                backgroundColor: alpha(
+                    theme.palette.primary.main,
+                    theme.palette.action.selectedOpacity,
+                ),
+            },
+        },
+    },
+}));
 export default function ViewAll({ products, productHeaders }) {
+    const router = useRouter()
     const [action, setAction] = useState(-1)
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const goToRoute = (route) => {
+        router.push(`/${route}`)
+    }
     const buttons = ["Copy", "Excel", "CSV", "PDF", "Print"]
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const handleAction = (id) => {
         if (id === action) {
-            // Clicked on the same button, close the dropdown menu
             setAction(-1);
-            setIsDropdownOpen(false);
         } else {
             setAction(id);
-            setIsDropdownOpen(true);
         }
     };
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (!event.target.closest('.dropdown-menu')) {
-                // Clicked outside the dropdown menu, close it
-                setAction(-1);
-                setIsDropdownOpen(false);
-            }
-        };
 
-        document.addEventListener('click', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('click', handleClickOutside);
-        };
-    }, []);
     const [page, setPage] = useState(1)
     const pageSize = 3
     const [start, setStart] = useState(1)
@@ -122,20 +167,50 @@ export default function ViewAll({ products, productHeaders }) {
                                                 <td>{product.status}</td>
                                                 <td>
 
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-default btn-sm" onClick={() => {
-                                                            handleAction(id)
-                                                        }}>Action</button>
-                                                        <button type="button" class="btn btn-default btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference<?php print($no) ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
-                                                                <polyline points="6 9 12 15 18 9"></polyline>
-                                                            </svg>
-                                                        </button>
-                                                        <div className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`} style={{ left: '-54%', top: '-6%' }}>
-                                                            <a className="dropdown-item" href="#">Edit</a>
-                                                            <a className="dropdown-item text-danger" href="?deleteCategory=">Delete</a>
-                                                        </div>
+                                                    <div>
+                                                        <Button
+                                                            id="demo-customized-button"
+                                                            aria-controls={open ? 'demo-customized-menu' : undefined}
+                                                            aria-haspopup="true"
+                                                            aria-expanded={open ? 'true' : undefined}
+                                                            variant="contained"
+                                                            disableElevation
+                                                            onClick={handleClick}
+                                                            endIcon={<KeyboardArrowDownIcon />}
+                                                        >
+                                                            Options
+                                                        </Button>
+                                                        <StyledMenu
+                                                            id="demo-customized-menu"
+                                                            MenuListProps={{
+                                                                'aria-labelledby': 'demo-customized-button',
+                                                            }}
+                                                            anchorEl={anchorEl}
+                                                            open={open}
+                                                            onClose={handleClose}
+                                                        >
+                                                            <MenuItem onClick={() => {
+                                                                handleClose()
+                                                                goToRoute("createproduct")
 
+                                                            }} disableRipple>
+                                                                <EditIcon />
+                                                                Edit
+                                                            </MenuItem>
+                                                            <MenuItem onClick={handleClose} disableRipple>
+                                                                <FileCopyIcon />
+                                                                Details
+                                                            </MenuItem>
+                                                            <Divider sx={{ my: 0.5 }} />
+                                                            <MenuItem onClick={handleClose} disableRipple>
+                                                                <ArchiveIcon />
+                                                                Delete
+                                                            </MenuItem>
+                                                            <MenuItem onClick={handleClose} disableRipple>
+                                                                <MoreHorizIcon />
+                                                                More
+                                                            </MenuItem>
+                                                        </StyledMenu>
                                                     </div>
                                                 </td>
                                             </tr>

@@ -9,6 +9,10 @@ import '../styles/custom-list-group.css'
 import '../styles/animate.css'
 import '../styles/datatables.css'
 import '../styles/dt-global_style.css'
+import '../styles/user-profile.css'
+import '../styles/structure.css'
+
+import '../styles/select2.min.css'
 export default function App({ Component, pageProps, session }) {
     return (
         <Component {...pageProps} />
