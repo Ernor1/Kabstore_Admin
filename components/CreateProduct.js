@@ -145,14 +145,6 @@ export default function CreateProductC({ categories }) {
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6 mb-3 ">
-                                            <div class="form-group">
-
-                                                <input type="text" class="form-control" placeholder="Status" name="statud" value={status} onChange={(e) => {
-                                                    setStatus(e.target.value)
-                                                }} required />
-                                            </div>
-                                        </div>
                                         <div class="col-lg-12 mb-3">
                                             <div class="form-group">
 
