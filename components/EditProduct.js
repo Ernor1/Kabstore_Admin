@@ -73,7 +73,7 @@ export default function EditProductC({ categories, product }) {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('price', price);
-        formData.append('discount', discount);
+        formData.append('discount', `${(price / discount) * 100}%}`);
         formData.append('category', category);
         formData.append('description', description);
         formData.append('status', status);
