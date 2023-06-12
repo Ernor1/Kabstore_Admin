@@ -65,7 +65,7 @@ export default function CreateProductC({ categories }) {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('price', price);
-        formData.append('discount', `${(parseInt(price) / parseInt(discount)) * 100}%}`);
+        formData.append('discount', `${(parseInt(discount) / parseInt(price)) * 100}%`);
         formData.append('category', category);
         formData.append('description', description);
         formData.append('status', status);
@@ -76,9 +76,12 @@ export default function CreateProductC({ categories }) {
                 formData.append(`image${index}`, file.originFileObj);
             });
         }
+        else {
+            message.error("No pictures")
+        }
 
         try {
-            const api = await fetch('https://kabstore-7p9q.onrender.com/product/', {
+            const api = await fetch('https://kabstore-7p9q.onrender.com/product', {
                 method: 'POST',
                 body: formData,
             });
