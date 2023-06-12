@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Upload, Spin, Alert, ConfigProvider, Anchor, Row, Col } from 'antd';
 import ImgCrop from 'antd-img-crop';
+import { message } from 'antd'
 
 // Import Swiper styles
 import 'swiper/css';
@@ -14,10 +15,6 @@ import { Autoplay, Pagination, Navigation } from 'swiper';
 export default function Product({ product }) {
     const [showField, setShowField] = useState(false);
     const [progress, setProgress] = useState(false)
-    const [status, setStatus] = useState('')
-    const [success, setSuccess] = useState(false)
-    const [error, setError] = useState(false)
-    const [message, setMessage] = useState('')
     console.log(product.pictures);
     let picArr = []
     if (product.pictures?.length > 0) {
@@ -78,22 +75,17 @@ export default function Product({ product }) {
                 });
                 const data = await api.json();
                 if (data) {
-                    setSuccess(true);
-                    setTimeout(() => {
-                        setSuccess(false);
-                    }, 2000);
+                    message.success("Images Uploaded Successfully")
                     setProgress(false);
                 }
             } catch (err) {
+                setProgress(false);
+                message.error("Error Uploading Images")
                 console.log(err);
             }
         }
         else {
-            setMessage("Field is Empty")
-            setError(true)
-            setTimeout(() => {
-                setError(false);
-            }, 2000);
+            message.error("Please Select Images")
             setProgress(false);
 
         }

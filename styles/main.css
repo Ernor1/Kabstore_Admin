@@ -2893,3 +2893,148 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination {
 .swip .swiper-pagination {
     color: #000 !important;
 }
+
+.timer-product-boxed {
+    padding: 25px 32px;
+}
+
+@media (max-width: 767px) {
+    .timer-product-boxed {
+        padding: 25px 23px;
+        margin-bottom: 30px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .timer-product-boxed {
+        margin-bottom: 30px;
+    }
+}
+
+.timer-product-wrap {
+    display: flex;
+}
+
+@media (max-width: 767px) {
+    .timer-product-wrap {
+        flex-wrap: wrap;
+    }
+}
+
+.timer-product-wrap>.thumb {
+    flex: 0 0 auto;
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .timer-product-wrap>.thumb {
+        margin-right: 10px;
+    }
+}
+
+.timer-product-wrap p {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--clr-soft-4);
+}
+
+.timer-product-wrap .text {
+    margin-bottom: 58px;
+}
+
+@media (max-width: 767px) {
+    .timer-product-wrap .text {
+        margin-bottom: 30px;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .timer-product-wrap .text {
+        margin-bottom: 30px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .timer-product-wrap .text {
+        margin-bottom: 0;
+    }
+}
+
+.deals-countdown .countdown-inner ul li {
+    text-transform: uppercase;
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 400;
+    margin-right: 4px;
+    text-align: center;
+    color: #777777;
+}
+
+.deals-countdown .countdown-inner ul li span {
+    background-color: var(--clr-gray-4);
+    display: block;
+    text-align: center;
+    line-height: 58px;
+    border-radius: 3px;
+    min-height: 58px;
+    margin-bottom: 4px;
+    min-width: 60px;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--clr-link-1);
+}
+
+@media (max-width: 767px) {
+    .deals-countdown .countdown-inner ul li span {
+        line-height: 45px;
+        min-height: 45px;
+        min-width: 51px;
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .deals-countdown .countdown-inner ul li span {
+        min-height: 40px;
+        min-width: 48px;
+        line-height: 40px;
+        font-size: 16px;
+    }
+}
+
+.deals-countdown-2 .countdown-inner ul li {
+    margin-right: 15px;
+}
+
+@media (max-width: 767px) {
+    .deals-countdown-2 .countdown-inner ul li {
+        margin-right: 12px;
+    }
+}
+
+.deals-countdown-2 .countdown-inner ul li:not(:last-child) span {
+    position: relative;
+    font-size: 21px;
+    font-weight: 500;
+}
+
+.deals-countdown-2 .countdown-inner ul li:not(:last-child) span::after {
+    position: absolute;
+    right: -13px;
+    top: 50%;
+    transform: translateY(-50%);
+    content: ":";
+}
+
+@media (max-width: 767px) {
+    .deals-countdown-2 .countdown-inner ul li:not(:last-child) span::after {
+        right: -11px;
+    }
+}
+
+.deals-countdown-2 .countdown-inner ul li span {
+    min-height: 44px;
+    line-height: 44px;
+    font-size: 20px;
+    min-width: 48px;
+}
