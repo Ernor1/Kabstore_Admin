@@ -12,7 +12,7 @@ import '../styles/dt-global_style.css'
 import '../styles/user-profile.css'
 import '../styles/structure.css'
 import '../styles/custom-media_object.css'
-import '../styles/scrollSpyNav.css'
+import '../styles/scrollspyNav.css'
 import '../styles/loader.css'
 
 import '../styles/select2.min.css'
