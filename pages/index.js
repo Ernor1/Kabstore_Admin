@@ -4,7 +4,8 @@ import NavBar from '../components/NavBar'
 import SideBar from '../components/SideBar'
 import Chart from '../components/Chart';
 
-export default function Home() {
+export default function Home({ products }) {
+  console.log(products.length);
   return (
     <>
       <NavBar />
@@ -49,15 +50,8 @@ export default function Home() {
                       <div class="w-detail">
                         <p class="w-title">Sales</p>
                         <p class="w-stats">
-                          {/* <?php
 
-                        $query = mysqli_query($connection,"SELECT SUM(order_total) as total FROM orders, payments WHERE orders.order_id = payments.order_id AND transaction_status ='paid'");
-                        $data = mysqli_fetch_assoc($query);
-                        $total = $data["total"];
 
-                        print number_format($total);
-                                        
-                                        ?> */}
                         </p>
                       </div>
                       <Chart size={67} chart={'line'} color={'#1b9982'} />
@@ -73,17 +67,12 @@ export default function Home() {
                       <div class="info">
                         <h5 class="">Products</h5>
                         <p class="inv-balance">
-                          {/* <?php
-
-                        $query = mysqli_query($connection, "SELECT * FROM  products") or die(mysqli_error($connection));
-                        $count = mysqli_num_rows($query);
-                        print number_format($count);
-                                        ?> */}
+                          {products.length}
                         </p>
                       </div>
                       <div class="acc-action">
                         <div class="">
-                          <a href="addProduct.php"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                          <a href="createproduct"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                           </svg></a>
@@ -295,4 +284,18 @@ export default function Home() {
     </>
 
   )
+}
+
+export async function getServerSideProps(context) {
+
+  const products = await fetch('https://kabstore-7p9q.onrender.com/product')
+    .then(response => response.json())
+
+  return {
+    props: {
+      products,
+
+
+    }
+  }
 }

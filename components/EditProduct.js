@@ -148,12 +148,17 @@ export default function EditProductC({ categories, product }) {
                                                 }} required />
                                             </div>
                                         </div>
-                                        <div class="col-lg-6 mb-3 ">
+                                        <div class="col-lg-12 mb-3 ">
                                             <div class="form-group">
-
-                                                <input type="text" class="form-control" placeholder="Status" name="statud" value={status} onChange={(e) => {
+                                                <select name="categoryId" id="" required class='form-control' onChange={(e) => {
                                                     setStatus(e.target.value)
-                                                }} required />
+                                                }}>
+                                                    <option value="">Product Status</option>
+                                                    <option value="AVAILABLE">AVAILABLE</option>
+                                                    <option value="UNAVAILABLE">UNAVAILABLE</option>
+                                                    <option value="OUT OF STOCK">OUT OF STOCK</option>
+                                                    <option value="COMING SOON">COMING SOON</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="col-lg-12 mb-3">

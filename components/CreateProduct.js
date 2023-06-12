@@ -132,7 +132,15 @@ export default function CreateProductC({ categories }) {
                                                 }} />
                                             </div>
                                         </div>
-                                        <div class="col-lg-6 mb-3 ">
+                                        <div class="col-lg-6 mb-3">
+                                            <div class="form-group">
+
+                                                <input type="number" class="form-control" placeholder="Discount [ RWF ]" name="productPrice" value={discount} required onChange={(e) => {
+                                                    setDiscount(e.target.value)
+                                                }} />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 mb-3 ">
                                             <div class="form-group">
                                                 <select name="categoryId" id="" required class='form-control' onChange={(e) => {
                                                     setStatus(e.target.value)
