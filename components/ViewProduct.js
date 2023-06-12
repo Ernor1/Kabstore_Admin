@@ -69,7 +69,6 @@ export default function ViewProducts({ products, productHeaders, categories }) {
     const [action, setAction] = useState(-1)
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
-    const [messageApi, contextHolder] = message.useMessage();
     const [data, setData] = useState(products)
     useEffect(() => {
         setData(products)
@@ -272,14 +271,7 @@ export default function ViewProducts({ products, productHeaders, categories }) {
                                                                 <FileCopyIcon />
                                                                 Details
                                                             </MenuItem>
-                                                            {contextHolder}
-                                                            <MenuItem onClick={() => {
-                                                                handleClose()
-                                                                onDeleteClick(product._id)
-                                                            }} disableRipple>
-                                                                <ArchiveIcon />
-                                                                Delete
-                                                            </MenuItem>
+
                                                         </StyledMenu>
                                                     </div>
                                                 </td>
