@@ -13,8 +13,16 @@ import { message } from 'antd'
 //         url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
 //     },
 // ]
-export default function CreateProductC({ categories }) {
-    const [fileList, setFileList] = useState([]);
+export default function EditProductC({ categories, product }) {
+    let picArr = product.pictures?.map((picture) => {
+        return ({
+            uid: '-1',
+            name: 'image.png',
+            status: 'done',
+            url: picture
+        })
+    })
+    const [fileList, setFileList] = useState(picArr)
     const theme = createTheme({
         status: {
             danger: '#e53e3e',
@@ -50,14 +58,14 @@ export default function CreateProductC({ categories }) {
         imgWindow?.document.write(image.outerHTML);
     };
 
-    const [name, setName] = useState('')
-    const [price, setPrice] = useState('')
-    const [discount, setDiscount] = useState('')
-    const [category, setCategory] = useState('')
-    const [description, setDescription] = useState('')
+    const [name, setName] = useState(product.name)
+    const [price, setPrice] = useState(product.price)
+    const [discount, setDiscount] = useState(product.discount)
+    const [category, setCategory] = useState(product.category)
+    const [description, setDescription] = useState(product.description)
     const [picture, setPicture] = useState(null)
     const [progress, setProgress] = useState(false)
-    const [status, setStatus] = useState('')
+    const [status, setStatus] = useState(product.status)
     const handleFormSubmit = async (e) => {
         e?.preventDefault();
         setProgress(true);
@@ -72,23 +80,23 @@ export default function CreateProductC({ categories }) {
 
         // Append the image file to the form data
         if (fileList.length > 0) {
-            fileList.forEach((file, index) => {
-                formData.append(`image${index}`, file.originFileObj);
-            });
+            const imageFile = fileList[0].originFileObj;
+            formData.append('picture', imageFile);
         }
 
         try {
             const api = await fetch('https://kabstore-7p9q.onrender.com/product/', {
-                method: 'POST',
+                method: 'PUT',
                 body: formData,
             });
             const data = await api.json();
             if (data) {
-                message.success('Product created successfully', 5);
+                message.success('Product Updated Successfully', 5);
+
                 setProgress(false);
             }
         } catch (err) {
-            message.error('Something went wrong', 5);
+            message.error('Failed to Update Product', 5);
             setProgress(false);
             console.log(err);
         }
@@ -110,7 +118,7 @@ export default function CreateProductC({ categories }) {
                             <div class="widget-content widget-content-area">
 
                                 <form action="" method="post" enctype="multipart/form-data" onSubmit={handleFormSubmit}>
-                                    <h3 class="">Product Registration</h3>
+                                    <h3 class="">Update Product</h3>
 
 
                                     <div class="row">
@@ -151,7 +159,7 @@ export default function CreateProductC({ categories }) {
                                         <div class="col-lg-12 mb-3">
                                             <div class="form-group">
 
-                                                <select name="categoryId" id="" required class='form-control' onChange={(e) => {
+                                                <select name="categoryId" id="" required class='form-control' value={category} onChange={(e) => {
                                                     setCategory(e.target.value)
                                                 }}>
                                                     <option value="">Product Category</option>
@@ -192,7 +200,7 @@ export default function CreateProductC({ categories }) {
                                                         onChange={onChange}
                                                         onPreview={onPreview}
                                                     >
-                                                        {fileList.length < 5 && '+ Upload'}
+                                                        {fileList?.length < 5 && '+ Upload'}
                                                     </Upload>
                                                 </ImgCrop>
                                                 {/* <input type="file" name="productImage" class="form-control" required onChange={(e) => {
@@ -207,7 +215,7 @@ export default function CreateProductC({ categories }) {
                                         </ThemeProvider>}
                                         {!progress && "Save Product"}</button>
                                 </form>
-
+                                {success && <Alert className='mt-2' message="Product updated" type="success" /> || error && <Alert className='mt-2' message={message} type="error" />}
                             </div>
                         </div>
                     </div>

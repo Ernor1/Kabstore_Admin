@@ -2,9 +2,9 @@ import NavBar from '../components/NavBar'
 import SideBar from '../components/SideBar'
 import { useRouter } from 'next/router';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import ViewAll from '../components/ViewAll';
+import ViewCategories from '../components/ViewCategories';
 
-export default function Categories({ name, subName, products }) {
+export default function Categories({ name, subName, products, categories }) {
     console.log("These are the products", products);
     const theme = createTheme({
         status: {
@@ -23,8 +23,8 @@ export default function Categories({ name, subName, products }) {
     });
     console.log(name, subName);
     console.log(products[0]);
-    const productHeaders = ["Name", "Price", "Discount", "Category", "Status"]
-    console.log(productHeaders); const router = useRouter();
+    const categoryHeaders = ["Name", "Products", "IS TOP"]
+    const router = useRouter();
     return (<ThemeProvider theme={theme}>
         <NavBar />
         <div class="main-container" id="container" >
@@ -32,7 +32,7 @@ export default function Categories({ name, subName, products }) {
             <div class="overlay"></div>
             <div class="search-overlay"></div>
             <SideBar name={name} subName={subName} />
-            <ViewAll products={products} productHeaders={productHeaders} />
+            <ViewCategories products={products} categories={categories} categoryHeaders={categoryHeaders} />
 
         </div >
     </ThemeProvider>)
@@ -43,7 +43,9 @@ export async function getServerSideProps(context) {
     // console.log(context);
     const name = query.name || null;
     const subName = query.subName || null;
-    const products = await fetch('http://localhost:4000/product')
+    const products = await fetch('https://kabstore-7p9q.onrender.com/product')
+        .then(response => response.json())
+    const categories = await fetch('https://kabstore-7p9q.onrender.com/category')
         .then(response => response.json())
     console.log("hello", products);
 
@@ -51,7 +53,10 @@ export async function getServerSideProps(context) {
         props: {
             name,
             subName,
-            products
+            products,
+            categories
         }
     }
 }
+
+

@@ -5,7 +5,6 @@ import { Alert } from 'antd';
 import { Upload } from 'antd';
 import ImgCrop from 'antd-img-crop';
 import { message } from 'antd'
-import { set } from 'nprogress';
 // [
 //     {
 //         uid: '-1',
@@ -14,46 +13,11 @@ import { set } from 'nprogress';
 //         url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
 //     },
 // ]
-export default function CreateCategoryC() {
-    const [fileList, setFileList] = useState([]);
-    const theme = createTheme({
-        status: {
-            danger: '#e53e3e',
-        },
-        palette: {
-            primary: {
-                main: '#000',
-                darker: '#053e85',
-            },
-            neutral: {
-                main: '#fff',
-                contrastText: '#fff',
-            },
-        },
-    });
-    const onChange = ({ fileList: newFileList }) => {
-        setFileList(newFileList);
-        console.log("This is the added file", newFileList);
-    };
+export default function EditCategoryC({ category }) {
+    const [name, setName] = useState(category.name)
+    const [description, setDescription] = useState(category.description)
+    const [isTop, setIsTop] = useState(category.isTop)
 
-    const onPreview = async (file) => {
-        let src = file.url
-        if (!src) {
-            src = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file.originFileObj);
-                reader.onload = () => resolve(reader.result);
-            });
-        }
-        const image = new Image();
-        image.src = src;
-        const imgWindow = window.open(src);
-        imgWindow?.document.write(image.outerHTML);
-    };
-
-    const [name, setName] = useState('')
-    const [isTop, setIsTop] = useState('')
-    const [description, setDescription] = useState('')
     const [progress, setProgress] = useState(false)
     const handleFormSubmit = async (e) => {
         e?.preventDefault();
@@ -61,21 +25,22 @@ export default function CreateCategoryC() {
 
         const formData = new FormData();
         formData.append('name', name);
+        formData.append('description', description);
         formData.append('isTop', isTop);
-        formData.append('description', description);;
+
 
         try {
             const api = await fetch('https://kabstore-7p9q.onrender.com/category/', {
-                method: 'POST',
+                method: 'PUT',
                 body: formData,
             });
             const data = await api.json();
             if (data) {
-                message.success("Category Created Successfully", 5)
+                message.success('Category Updated Successfully', 5);
                 setProgress(false);
             }
         } catch (err) {
-            message.error(`${err}`, 5)
+            message.error('Something went wrong', 5);
             setProgress(false);
             console.log(err);
         }
@@ -97,7 +62,7 @@ export default function CreateCategoryC() {
                             <div class="widget-content widget-content-area">
 
                                 <form action="" method="post" enctype="multipart/form-data" onSubmit={handleFormSubmit}>
-                                    <h3 class="">Category Registration</h3>
+                                    <h3 class="">Update Product</h3>
 
 
                                     <div class="row">
@@ -113,7 +78,7 @@ export default function CreateCategoryC() {
                                         <div class="col-lg-6 mb-3">
                                             <div class="form-group">
 
-                                                <select name="categoryId" id="" required class='form-control' onChange={(e) => {
+                                                <select name="categoryId" id="" value={isTop} required class='form-control' onChange={(e) => {
                                                     setIsTop(e.target.value)
                                                 }}>
                                                     <option value="">Is Top Category</option>
@@ -137,8 +102,9 @@ export default function CreateCategoryC() {
                                         {progress && <ThemeProvider theme={theme}>
                                             <CircularProgress className='mt-[10px]' color='neutral' size={20} />
                                         </ThemeProvider>}
-                                        {!progress && "Save Category"}</button>
+                                        {!progress && "Save Product"}</button>
                                 </form>
+
                             </div>
                         </div>
                     </div>

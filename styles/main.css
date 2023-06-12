@@ -811,7 +811,7 @@ select.form-control.form-custom {
 .btn-primary {
     color: #fff !important;
     background-color: #1e1e1e !important;
-    border-color: #1e1e1e;
+    border-color: #1e1e1e !important;
 }
 
 .btn-primary:hover,
@@ -2888,4 +2888,8 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination {
     div.dataTables_wrapper div.dataTables_info {
         margin-bottom: 40px;
     }
+}
+
+.swip .swiper-pagination {
+    color: #000 !important;
 }

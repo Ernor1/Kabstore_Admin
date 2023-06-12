@@ -1,8 +1,8 @@
-import CreateProductC from "../components/CreateProduct"
+import CreateCategoryC from "../components/CreateCategory"
 import NavBar from "../components/NavBar"
 import SideBar from "../components/SideBar"
 
-export default function CreateProduct({ name, subName, categories }) {
+export default function AddCategory({ name, subName, categories }) {
     return (<>
 
         <NavBar />
@@ -11,7 +11,7 @@ export default function CreateProduct({ name, subName, categories }) {
             <div class="overlay"></div>
             <div class="search-overlay"></div>
             <SideBar name={name} subName={subName} />
-            <CreateProductC categories={categories} />
+            <CreateCategoryC />
 
         </div >
     </>
@@ -20,18 +20,13 @@ export default function CreateProduct({ name, subName, categories }) {
 }
 export async function getServerSideProps(context) {
     const query = context.query;
-    // console.log(context);
     const name = query.name || null;
     const subName = query.subName || null;
-    const categories = await fetch('https://kabstore-7p9q.onrender.com/category')
-        .then(response => response.json())
-    console.log("hello", categories);
 
     return {
         props: {
             name,
             subName,
-            categories
         }
     }
 }

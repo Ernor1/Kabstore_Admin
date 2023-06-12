@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Collapse } from "react-bootstrap";
 import Icon from '../assets/img/favicon.png'
 import Image from "next/image";
-import { Trello, Layers, Layout, Box, Users, User } from 'react-feather';
+import { Trello, Layers, Layout, Box, Users, } from 'react-feather';
 import Link from "next/link";
 import { useRouter } from "next/router";
 export default function SideBar({ name, subName }) {
@@ -44,6 +44,7 @@ export default function SideBar({ name, subName }) {
     }
 
     const [active, setActive] = useState(-1);
+    console.log("consoling active", query.liId);
     const [page, setPage] = useState("Dashboard")
     const handlePage = (page) => {
         setPage(page)
@@ -106,7 +107,7 @@ export default function SideBar({ name, subName }) {
                             <li key={i} className={`menu catalog ${query.name == content.name ? "active" : ""}`} style={{ textDecoration: "none" }} onClick={() => handleClick(i)}>
                                 <a
                                     data-toggle="collapse"
-                                    aria-expanded={active === i ? "true" : "false"}
+                                    aria-expanded={active === i || query.name == content.name ? "true" : "false"}
                                     className="dropdown-toggle collapsed text-decoration-none  "
                                 >
                                     <div className=" ">
@@ -131,7 +132,7 @@ export default function SideBar({ name, subName }) {
                                     </div>
                                 </a>
                                 {content.subs ? (
-                                    <Collapse in={active === i}>
+                                    <Collapse in={active === i || content.name == query.name}>
                                         <ul className="submenu list-unstyled" id="catalog" data-parent="#accordionExample">
                                             {content.subs.map((sub, j) => {
                                                 return (

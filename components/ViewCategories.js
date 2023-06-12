@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
-import NavBar from '../components/NavBar'
-import SideBar from '../components/SideBar'
-import Chart from '../components/Chart';
+import NavBar from './NavBar'
+import SideBar from './SideBar'
+import Chart from './Chart';
 import { useRouter } from 'next/router';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
@@ -21,6 +21,10 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { PlusCircle } from 'react-feather';
+import Link from 'next/link';
+import { message } from 'antd';
+import { set } from 'nprogress';
 const StyledMenu = styled((props) => (
     <Menu
         elevation={0}
@@ -61,11 +65,67 @@ const StyledMenu = styled((props) => (
         },
     },
 }));
-export default function ViewAll({ products, productHeaders }) {
+export default function ViewCategories({ products, categoryHeaders, categories }) {
     const router = useRouter()
     const [action, setAction] = useState(-1)
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const [data, setData] = useState(categories)
+    useEffect(() => {
+        setData(categories)
+    }, [categories])
+    const onRouteClick = (name, sub) => {
+        router.push({
+            pathname: `/createcategory`,
+            query: {
+                name: name,
+                subName: sub
+            },
+        }, `/${sub.toLowerCase()}`, { shallow: true, as: router.asPath }, { scroll: false })
+    }
+    const onDetailClick = (id, name, sub) => {
+        router.push({
+            pathname: `/category/${id}`,
+            query: {
+                name: name,
+                subName: sub
+            },
+        }, `/category/${id}`, { shallow: true, as: router.asPath }, { scroll: false })
+    }
+    const onEditClick = (id, name, sub) => {
+        router.push({
+            pathname: `/editcategory/${id}`,
+            query: {
+                name: name,
+                subName: sub
+            },
+        }, `/editcategory/${id}`, { shallow: true, as: router.asPath }, { scroll: false })
+    }
+    const onDeleteClick = async (id) => {
+        try {
+            message.loading("Deleting category", 2.5);
+
+            // Introduce a delay of 2 seconds before the delete action
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            console.log("id", id);
+
+            const api = await fetch('https://kabstore-7p9q.onrender.com/category/' + id, {
+                method: 'DELETE',
+            });
+            const data = await api.json();
+            if (data) {
+                console.log(data);
+                message.success("Category deleted successfully")
+                refreshData()
+
+
+            }
+        } catch (err) {
+            console.log("error from categories", err);
+            message.error(err);
+        }
+    };
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -86,39 +146,42 @@ export default function ViewAll({ products, productHeaders }) {
     };
 
     const [page, setPage] = useState(1)
-    const pageSize = 3
+    const pageSize = 8
     const [start, setStart] = useState(1)
-    const [displayProducts, setDisplayProducts] = useState([])
+    const [displayCategories, setDisplayCategories] = useState([])
 
     const [end, setEnd] = useState(pageSize)
-    const [price, setPrice] = useState(false)
-    let pageCount = Math.ceil(products?.length / pageSize)
+    let pageCount = Math.ceil(data?.length / pageSize)
     useEffect(() => {
-        pageCount = Math.ceil(products?.length / pageSize)
-    }, [products])
+        pageCount = Math.ceil(data?.length / pageSize)
+    }, [data])
     console.log(pageCount);
     useEffect(() => {
         const firstPageIndex = (page - 1) * pageSize;
         const lastPageIndex = firstPageIndex + pageSize;
-        if (lastPageIndex < products?.length) {
+        if (lastPageIndex < data?.length) {
             setStart(firstPageIndex + 1)
             setEnd(lastPageIndex)
             console.log("was here", lastPageIndex);
         }
         else {
             setStart(firstPageIndex + 1)
-            setEnd(firstPageIndex + 1)
+            setEnd(data?.length)
             console.log("was last bbbrr", firstPageIndex + 1);
         }
-        return setDisplayProducts(products?.slice(firstPageIndex, lastPageIndex));
+        return setDisplayCategories(data?.slice(firstPageIndex, lastPageIndex));
 
-    }, [page])
-    console.log('cp', displayProducts);
+    }, [page, data])
+    // console.log('cp', displayCategories);
     const handlePagination = (event, page1) => {
         setPage(page1)
     }
+
+
     return (
-        <div id="content" class="main-content">
+        <div id="content" class="main-content mt-16" style={{
+            marginTop: "80px"
+        }}>
             <div class="layout-px-spacing">
 
                 <div class="row layout-top-spacing" id="cancel-row">
@@ -126,6 +189,7 @@ export default function ViewAll({ products, productHeaders }) {
                     <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                         {/* <?php require("scripts/main.php"); ?> */}
                         <div class="widget-content widget-content-area br-6">
+
                             <div className='db-buttons col-md-6 col-xl-12 row gap-4 '>
                                 {buttons.map((button, index) => {
                                     return <button className='dt-button buttons-html5 w-[20%] btn bg-black' style={{
@@ -146,25 +210,35 @@ export default function ViewAll({ products, productHeaders }) {
                                     <thead>
                                         <tr>
                                             <th width="30">No</th>
-                                            {productHeaders?.map((header) => {
+                                            {categoryHeaders?.map((header) => {
                                                 return <th>{header}</th>
                                             })}
 
                                             <th width="50">Action</th>
+                                            <th width="50">Delete</th>
 
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {products?.map((product, id) => {
+                                        {displayCategories?.map((category, id) => {
+
                                             return <tr>
-                                                <td>{id + 1}</td>
-                                                <td>{product.name}</td>
-                                                <td>{product.price}</td>
+                                                <td>{id + start}</td>
+                                                <td>{category.name}</td>
+                                                <td>{products.filter(
+                                                    product => {
+                                                        return (
+
+                                                            product
+                                                                .category
+                                                                .toLowerCase()
+                                                                .includes(category.name.toLowerCase())
+                                                        );
+                                                    }
+                                                ).length}</td>
                                                 <td>
-                                                    {product.discount}
+                                                    {category.isTop}
                                                 </td>
-                                                <td>{product.category}</td>
-                                                <td>{product.status}</td>
                                                 <td>
 
                                                     <div>
@@ -191,28 +265,25 @@ export default function ViewAll({ products, productHeaders }) {
                                                         >
                                                             <MenuItem onClick={() => {
                                                                 handleClose()
-                                                                goToRoute("createproduct")
+                                                                onEditClick(category._id, "Catalog", "Categories")
 
                                                             }} disableRipple>
                                                                 <EditIcon />
                                                                 Edit
                                                             </MenuItem>
-                                                            <MenuItem onClick={handleClose} disableRipple>
+                                                            <MenuItem onClick={() => {
+                                                                handleClose()
+                                                                onDetailClick(category._id, "Catalog", "Categories")
+                                                            }} disableRipple>
                                                                 <FileCopyIcon />
                                                                 Details
-                                                            </MenuItem>
-                                                            <Divider sx={{ my: 0.5 }} />
-                                                            <MenuItem onClick={handleClose} disableRipple>
-                                                                <ArchiveIcon />
-                                                                Delete
-                                                            </MenuItem>
-                                                            <MenuItem onClick={handleClose} disableRipple>
-                                                                <MoreHorizIcon />
-                                                                More
                                                             </MenuItem>
                                                         </StyledMenu>
                                                     </div>
                                                 </td>
+                                                <td><Button onClick={() => {
+                                                    onDeleteClick(category._id)
+                                                }} >Delete</Button></td>
                                             </tr>
 
                                         })}
@@ -229,23 +300,40 @@ export default function ViewAll({ products, productHeaders }) {
                                     <tfoot>
                                         <tr>
                                             <th width="30">No</th>
-                                            <th>Name</th>
-                                            <th>Price</th>
-                                            <th>Qty</th>
-                                            <th>Status</th>
-                                            <th>Category</th>
+                                            {categoryHeaders?.map((header) => {
+                                                return <th>{header}</th>
+                                            })}
+
                                             <th width="50">Action</th>
+                                            <th width="50">Delete</th>
+
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <div className='row  col-md-5'>
+                                <div className='row  col-md-5' style={{
+                                    flexWrap: "nowrap",
+                                    gap: "30%"
+                                }}>
+                                    <div className='' style={{
+                                        border: "1px solid rgb(0, 0, 0)",
+                                        borderRadius: "5px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        marginLeft: "57px",
+                                        fontWeight: "500",
+                                        fontSize: "14px",
+                                        width: "200px"
+                                        // paddingLeft: "35px",
+                                    }}><span>{`Showing products ${start}–${end}`}</span></div>
                                     <Pagination color='primary' count={pageCount} variant="outlined" onChange={handlePagination} shape="circular" />
                                 </div>
 
                             </div>
                         </div>
 
-                        <a href="addCategory" class="btn btn-primary btn-rounded btn-floated"><i data-feather="plus-circle"></i></a>
+                        <a class="btn btn-primary btn-rounded btn-floated" onClick={() => {
+                            onRouteClick("Catalog", "Categories")
+                        }}><PlusCircle /></a>
                     </div>
 
                 </div>
@@ -253,6 +341,6 @@ export default function ViewAll({ products, productHeaders }) {
             </div>
             {/* <?php require("templates/footer.php"); ?> */}
             {/* </Footer> */}
-        </div>
+        </div >
     )
 }

@@ -11,10 +11,35 @@ import '../styles/datatables.css'
 import '../styles/dt-global_style.css'
 import '../styles/user-profile.css'
 import '../styles/structure.css'
+import '../styles/custom-media_object.css'
+import '../styles/scrollSpyNav.css'
+import '../styles/loader.css'
 
 import '../styles/select2.min.css'
+import 'bootstrap/dist/css/bootstrap.css';
+import Router, { useRouter } from 'next/router'
+import { use, useState } from 'react'
+import Loader from '../components/Loader'
+
 export default function App({ Component, pageProps, session }) {
+    const [loading, setLoading] = useState(false)
+    const router = useRouter()
+    const [path, setPath] = useState(router.asPath)
+    Router.events.on("routeChangeStart", (url) => {
+        console.log("Changing");
+        if (url !== path) {
+            setLoading(true);
+            setPath(url);
+        }
+    })
+    Router.events.on("routeChangeComplete", (url) => {
+        console.log("Complete");
+        setLoading(false);
+    })
     return (
-        <Component {...pageProps} />
+        <>
+            {loading ? <Loader /> : <Component {...pageProps} />}
+
+        </>
     )
 }

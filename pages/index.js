@@ -15,7 +15,9 @@ export default function Home() {
         <SideBar />
 
 
-        <div id="content" class="main-content">
+        <div id="content" class="main-content" style={{
+          marginTop: "80px"
+        }}>
           <div class="layout-px-spacing">
             <div class="row layout-top-spacing">
 

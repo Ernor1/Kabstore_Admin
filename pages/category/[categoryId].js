@@ -1,10 +1,10 @@
-import NavBar from '../components/NavBar'
-import SideBar from '../components/SideBar'
+import NavBar from '../../components/NavBar'
+import SideBar from '../../components/SideBar'
 import { useRouter } from 'next/router';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import ViewProducts from '../components/ViewProduct';
+import Category from '../../components/Category';
 
-export default function Products({ name, subName, products }) {
+export default function ({ name, subName, products, category }) {
     console.log("These are the products", products);
     const theme = createTheme({
         status: {
@@ -24,8 +24,7 @@ export default function Products({ name, subName, products }) {
     console.log(name, subName);
     console.log(products[0]);
     const productHeaders = ["Name", "Price", "Discount", "Category", "Status"]
-    console.log(productHeaders);
-    const router = useRouter();
+    console.log(productHeaders); const router = useRouter();
     return (<ThemeProvider theme={theme}>
         <NavBar />
         <div class="main-container" id="container" >
@@ -33,7 +32,7 @@ export default function Products({ name, subName, products }) {
             <div class="overlay"></div>
             <div class="search-overlay"></div>
             <SideBar name={name} subName={subName} />
-            <ViewProducts products={products} productHeaders={productHeaders} />
+            <Category category={category} products={products} />
 
         </div >
     </ThemeProvider>)
@@ -41,20 +40,32 @@ export default function Products({ name, subName, products }) {
 
 export async function getServerSideProps(context) {
     const query = context.query;
-    // console.log(context);
     const name = query.name || null;
     const subName = query.subName || null;
-    const products = await fetch('https://kabstore-7p9q.onrender.com/product')
+    const category = await fetch('https://kabstore-7p9q.onrender.com/category/' + context.params.categoryId)
         .then(response => response.json())
-    console.log("hello", products);
-    const categories = []
+    const pro = await fetch('https://kabstore-7p9q.onrender.com/product')
+        .then(response => response.json())
+    console.log(category, "from categories");
+    const products = pro.filter(
+        product => {
+            return (
+
+                product
+                    .category
+                    .toLowerCase()
+                    .includes(category.name.toLowerCase())
+            );
+        }
+    )
+    console.log("pros from categories", products);
 
     return {
         props: {
             name,
             subName,
             products,
-            categories
+            category
 
         }
     }
