@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Alert } from 'antd';
 import { Upload } from 'antd';
 import ImgCrop from 'antd-img-crop';
-import { message } from 'antd'
+import { message, ColorPicker } from 'antd'
 // [
 //     {
 //         uid: '-1',
@@ -15,6 +15,13 @@ import { message } from 'antd'
 // ]
 export default function CreateProductC({ categories }) {
     const [fileList, setFileList] = useState([]);
+    const [color, setColor] = useState('')
+    const [colorImg, setColorImg] = useState([])
+    const [colors, setColors] = useState([color])
+    useEffect(() => {
+        setColors([color])
+    }, [color])
+
     const theme = createTheme({
         status: {
             danger: '#e53e3e',
@@ -34,6 +41,10 @@ export default function CreateProductC({ categories }) {
         setFileList(newFileList);
         console.log("This is the added file", newFileList);
     };
+    const onImageChange = ({ fileList: newFileList }) => {
+        setColorImg(newFileList);
+        console.log("This is the added file", newFileList);
+    }
 
     const onPreview = async (file) => {
         let src = file.url
@@ -55,12 +66,12 @@ export default function CreateProductC({ categories }) {
     const [discount, setDiscount] = useState('')
     const [category, setCategory] = useState('')
     const [description, setDescription] = useState('')
-    const [picture, setPicture] = useState(null)
     const [progress, setProgress] = useState(false)
     const [status, setStatus] = useState('')
     const handleFormSubmit = async (e) => {
         e?.preventDefault();
         setProgress(true);
+        console.log("consoling array", colors);
 
         const formData = new FormData();
         formData.append('name', name);
@@ -69,19 +80,24 @@ export default function CreateProductC({ categories }) {
         formData.append('category', category);
         formData.append('description', description);
         formData.append('status', status);
+        formData.append('colors', colors); // Convert colors array to a string
 
         // Append the image file to the form data
         if (fileList.length > 0) {
             fileList.forEach((file, index) => {
                 formData.append(`image${index}`, file.originFileObj);
             });
+        } else {
+            message.error("No pictures");
         }
-        else {
-            message.error("No pictures")
+        if (colorImg.length > 0) {
+            colorImg.forEach((file, index) => {
+                formData.append(`colorImg${index}`, file.originFileObj);
+            });
         }
 
         try {
-            const api = await fetch('https://kabstore-7p9q.onrender.com/product', {
+            const api = await fetch('http://localhost:4000/product', {
                 method: 'POST',
                 body: formData,
             });
@@ -96,6 +112,7 @@ export default function CreateProductC({ categories }) {
             console.log(err);
         }
     };
+
 
     return (
 
@@ -207,6 +224,55 @@ export default function CreateProductC({ categories }) {
                                                     setPicture(e.target.files[0])
                                                 }} /> */}
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="statbox widget box box-shadow mb-5  ">
+                                        <div class="widget-header">
+                                            <div class="row">
+                                                <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                                    <h4>Product colors</h4>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="widget-content " style={{
+                                            padding: "10px 20px"
+                                        }}>
+
+                                            <div class="row">
+                                                <div class="col-md-6 col-6">
+                                                    <div class="form-group">
+                                                        <ImgCrop rotationSlider>
+                                                            <Upload
+                                                                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                                                listType="picture-card"
+                                                                fileList={colorImg}
+                                                                onChange={onImageChange}
+                                                                onPreview={onPreview}
+                                                            >
+                                                                {colorImg.length < 5 && '+ Upload'}
+                                                            </Upload>
+                                                        </ImgCrop>
+                                                    </div>
+                                                </div>
+                                                <div className='col-6'>
+                                                    <h5>Choose color</h5>
+                                                    <div class="col-5 col-md-11 col-sm-12 mb-1">
+                                                        <div class="form-group">
+
+                                                            <input type="text" class="form-control" placeholder="ProductColor" name="productPrice" value={color} required onChange={(e) => {
+                                                                setColor(e.target.value)
+                                                            }} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+
+
+                                            </div>
+
                                         </div>
                                     </div>
                                     <button class="btn btn-primary " type="submit" name="addProduct">
