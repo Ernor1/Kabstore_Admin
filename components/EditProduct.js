@@ -220,7 +220,7 @@ export default function EditProductC({ categories, product }) {
                                         </ThemeProvider>}
                                         {!progress && "Save Product"}</button>
                                 </form>
-                                {success && <Alert className='mt-2' message="Product updated" type="success" /> || error && <Alert className='mt-2' message={message} type="error" />}
+                                {/* {success && <Alert className='mt-2' message="Product updated" type="success" /> || error && <Alert className='mt-2' message={message} type="error" />} */}
                             </div>
                         </div>
                     </div>

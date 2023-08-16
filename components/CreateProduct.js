@@ -71,7 +71,8 @@ export default function CreateProductC({ categories }) {
     const handleFormSubmit = async (e) => {
         e?.preventDefault();
         setProgress(true);
-        console.log("consoling array", colors);
+        console.log("consoling array", JSON.stringify(colors));
+
 
         const formData = new FormData();
         formData.append('name', name);
@@ -80,7 +81,7 @@ export default function CreateProductC({ categories }) {
         formData.append('category', category);
         formData.append('description', description);
         formData.append('status', status);
-        formData.append('colors', colors); // Convert colors array to a string
+        formData.append('colors', JSON.stringify(colors)); // Convert colors array to a string
 
         // Append the image file to the form data
         if (fileList.length > 0) {
@@ -97,7 +98,7 @@ export default function CreateProductC({ categories }) {
         }
 
         try {
-            const api = await fetch('http://localhost:4000/product', {
+            const api = await fetch('https://kabstore-7p9q.onrender.com/product', {
                 method: 'POST',
                 body: formData,
             });
@@ -109,7 +110,7 @@ export default function CreateProductC({ categories }) {
         } catch (err) {
             message.error('Something went wrong', 5);
             setProgress(false);
-            console.log(err);
+            console.log("The pro error", err);
         }
     };
 

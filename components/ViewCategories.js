@@ -66,6 +66,7 @@ const StyledMenu = styled((props) => (
     },
 }));
 export default function ViewCategories({ products, categoryHeaders, categories }) {
+    console.log(categories)
     const router = useRouter()
     const [action, setAction] = useState(-1)
     const [anchorEl, setAnchorEl] = useState(null);
@@ -88,7 +89,8 @@ export default function ViewCategories({ products, categoryHeaders, categories }
             pathname: `/category/${id}`,
             query: {
                 name: name,
-                subName: sub
+                subName: sub,
+                load:true
             },
         }, `/category/${id}`, { shallow: true, as: router.asPath }, { scroll: false })
     }
