@@ -14,6 +14,21 @@ import { message } from 'antd'
 //     },
 // ]
 export default function EditCategoryC({ category }) {
+    const theme = createTheme({
+        status: {
+            danger: '#e53e3e',
+        },
+        palette: {
+            primary: {
+                main: '#000',
+                darker: '#053e85',
+            },
+            neutral: {
+                main: '#fff',
+                contrastText: '#fff',
+            },
+        },
+    });
     const [name, setName] = useState(category.name)
     const [description, setDescription] = useState(category.description)
     const [isTop, setIsTop] = useState(category.isTop)
@@ -30,7 +45,7 @@ export default function EditCategoryC({ category }) {
 
 
         try {
-            const api = await fetch('https://kabstore-7p9q.onrender.com/category/', {
+            const api = await fetch(`http://localhost:4000/category/${category._id}`, {
                 method: 'PUT',
                 body: formData,
             });

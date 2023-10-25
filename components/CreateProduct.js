@@ -4,7 +4,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Alert } from 'antd';
 import { Upload } from 'antd';
 import ImgCrop from 'antd-img-crop';
-import { message, ColorPicker } from 'antd'
+import { message, ColorPicker, FloatButton, Button } from 'antd'
+import { DeleteFilled, DownloadOutlined } from '@ant-design/icons';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+import AddIcon from '@mui/icons-material/Add'
 // [
 //     {
 //         uid: '-1',
@@ -17,10 +21,14 @@ export default function CreateProductC({ categories }) {
     const [fileList, setFileList] = useState([]);
     const [color, setColor] = useState('')
     const [colorImg, setColorImg] = useState([])
-    const [colors, setColors] = useState([color])
-    useEffect(() => {
-        setColors([color])
-    }, [color])
+    const [colors, setColors] = useState([])
+    const [index, setIndex] = useState(0)
+    const cols = []
+    // useEffect(() => {
+    //     cols.push(color)
+    //     setColors(cols)
+    //     console.log(cols);
+    // }, [color, cols])
 
     const theme = createTheme({
         status: {
@@ -37,14 +45,44 @@ export default function CreateProductC({ categories }) {
             },
         },
     });
+    const addColor = () => {
+        if (color.trim() !== '') {
+            if (colorImg.length > colors.length) {
+                setColors([...colors, color]);
+                setColor('');
+                console.log(colors);
+            } else {
+                message.error("Please add an image before adding another color.")
+                console.error("Please add an image before adding another color.");
+            }
+        }
+    }
+    const deleteColor = () => {
+        const newColors = [...colors];
+        newColors.pop()
+        setColors(newColors);
+        const newImages = [...colorImg]
+        newImages.pop()
+        setColorImg(newImages)
+        console.log(colorImg);
+    };
     const onChange = ({ fileList: newFileList }) => {
         setFileList(newFileList);
         console.log("This is the added file", newFileList);
+
     };
     const onImageChange = ({ fileList: newFileList }) => {
         setColorImg(newFileList);
         console.log("This is the added file", newFileList);
     }
+    const beforeUpload = (file) => {
+        if (colors.length === colorImg.length) {
+            return true;
+        } else {
+            message.error("Number of colors and images must be equal");
+            return false;
+        }
+    };
 
     const onPreview = async (file) => {
         let src = file.url
@@ -59,6 +97,10 @@ export default function CreateProductC({ categories }) {
         image.src = src;
         const imgWindow = window.open(src);
         imgWindow?.document.write(image.outerHTML);
+    };
+    const refreshData = () => {
+        router.replace(router.asPath);
+        setIsRefreshing(true);
     };
 
     const [name, setName] = useState('')
@@ -81,7 +123,7 @@ export default function CreateProductC({ categories }) {
         formData.append('category', category);
         formData.append('description', description);
         formData.append('status', status);
-        formData.append('colors', JSON.stringify(colors)); // Convert colors array to a string
+        formData.append('colors', JSON.stringify(colors)); // Convert colors array to a string 
 
         // Append the image file to the form data
         if (fileList.length > 0) {
@@ -98,7 +140,7 @@ export default function CreateProductC({ categories }) {
         }
 
         try {
-            const api = await fetch('https://kabstore-7p9q.onrender.com/product', {
+            const api = await fetch('http://localhost:4000/product', {
                 method: 'POST',
                 body: formData,
             });
@@ -186,13 +228,6 @@ export default function CreateProductC({ categories }) {
                                                     }
                                                     )
                                                     }
-                                                    {/* <?php
-
-                                                    $query = mysqli_query($connection, "SELECT * FROM  categories") or die(mysqli_error($connection));
-
-                                                    while ($data = mysqli_fetch_assoc($query)) { ?>
-                                                        <option value="<?php print $data["category_id"]; ?>"><?php print $data["category_name"]; ?></option>
-                                                    <?php } ?> */}
                                                 </select>
                                             </div>
                                         </div>
@@ -218,7 +253,7 @@ export default function CreateProductC({ categories }) {
                                                         onChange={onChange}
                                                         onPreview={onPreview}
                                                     >
-                                                        {fileList.length < 5 && '+ Upload'}
+                                                        {fileList.length < 10 && '+ Upload'}
                                                     </Upload>
                                                 </ImgCrop>
                                                 {/* <input type="file" name="productImage" class="form-control" required onChange={(e) => {
@@ -250,6 +285,7 @@ export default function CreateProductC({ categories }) {
                                                                 fileList={colorImg}
                                                                 onChange={onImageChange}
                                                                 onPreview={onPreview}
+                                                                beforeUpload={beforeUpload}
                                                             >
                                                                 {colorImg.length < 5 && '+ Upload'}
                                                             </Upload>
@@ -261,9 +297,31 @@ export default function CreateProductC({ categories }) {
                                                     <div class="col-5 col-md-11 col-sm-12 mb-1">
                                                         <div class="form-group">
 
-                                                            <input type="text" class="form-control" placeholder="ProductColor" name="productPrice" value={color} required onChange={(e) => {
+                                                            <input type="text" class="form-control" placeholder="ProductColor" name="productPrice" value={color} onChange={(e) => {
                                                                 setColor(e.target.value)
                                                             }} />
+                                                        </div>
+                                                        <IconButton onClick={() => {
+                                                            addColor(color)
+                                                        }} aria-label="delete" color='primary'>
+                                                            <AddIcon />
+                                                        </IconButton>
+                                                        <IconButton onClick={() => {
+                                                            deleteColor(index)
+                                                        }} color='error' aria-label="delete">
+                                                            <DeleteIcon />
+                                                        </IconButton>
+
+                                                        <div className="d-flex gap-4 mt-3">
+                                                            {
+                                                                colors?.map((c) => {
+                                                                    console.log("From color display", color);
+                                                                    return <Button style={{
+                                                                        backgroundColor: `${c}`,
+                                                                    }} />
+
+                                                                })
+                                                            }
                                                         </div>
                                                     </div>
                                                 </div>

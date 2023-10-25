@@ -84,13 +84,16 @@ export default function ViewCategories({ products, categoryHeaders, categories }
             },
         }, `/${sub.toLowerCase()}`, { shallow: true, as: router.asPath }, { scroll: false })
     }
+    const refreshData = () => {
+        router.replace(router.asPath);
+    };
     const onDetailClick = (id, name, sub) => {
         router.push({
             pathname: `/category/${id}`,
             query: {
                 name: name,
                 subName: sub,
-                load:true
+                load: true
             },
         }, `/category/${id}`, { shallow: true, as: router.asPath }, { scroll: false })
     }
@@ -111,7 +114,7 @@ export default function ViewCategories({ products, categoryHeaders, categories }
             await new Promise((resolve) => setTimeout(resolve, 2000));
             console.log("id", id);
 
-            const api = await fetch('https://kabstore-7p9q.onrender.com/category/' + id, {
+            const api = await fetch('http://localhost:4000/category/' + id, {
                 method: 'DELETE',
             });
             const data = await api.json();

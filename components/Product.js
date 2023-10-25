@@ -1,9 +1,10 @@
 import { ChevronsRight, ChevronsLeft, Edit3, PlusCircle, UploadCloud } from "react-feather";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Upload, Spin, Alert, ConfigProvider, Anchor, Row, Col } from 'antd';
 import ImgCrop from 'antd-img-crop';
-import { message } from 'antd'
+import { CommentOutlined, CustomerServiceOutlined } from '@ant-design/icons';
+import { message, Button, FloatButton, Modal, Image } from 'antd'
 
 // Import Swiper styles
 import 'swiper/css';
@@ -11,10 +12,40 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import 'swiper/swiper-bundle.css';
 import { Autoplay, Pagination, Navigation } from 'swiper';
+import { useRouter } from 'next/router';
 
-export default function Product({ product }) {
+export default function Product({ product, isInitialLoaded }) {
     const [showField, setShowField] = useState(false);
-    const [progress, setProgress] = useState(false)
+    const [progress, setProgress] = useState(false);
+    const [selectedColor, setSelectedColor] = useState('');
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState(false);
+    const [colorImageVisible, setColorImageVisible] = useState(false);
+    const [colorImageSrc, setColorImageSrc] = useState('');
+    const router = useRouter();
+
+    useEffect(() => {
+        if (isInitialLoaded && typeof window !== 'undefined') {
+            const hasPageReloaded = sessionStorage.getItem('hasPageReloaded');
+
+            if (!hasPageReloaded) {
+                sessionStorage.setItem('hasPageReloaded', 'true');
+
+
+                router.push(router.asPath);
+            }
+        }
+    }, [router, isInitialLoaded]);
+
+
+
+
+
+    const showColorImage = (color, image) => {
+        setSelectedColor(color);
+        setColorImageSrc(image);
+        setColorImageVisible(true);
+    };
     console.log(product.pictures);
     let picArr = []
     if (product.pictures?.length > 0) {
@@ -62,6 +93,7 @@ export default function Product({ product }) {
         const formData = new FormData();
         console.log("This is the file list", fileList);
         if (fileList.length > 0) {
+            console.log(fileList.length);
             fileList.forEach((file, index) => {
                 formData.append(`image${index}`, file.originFileObj);
             });
@@ -69,7 +101,7 @@ export default function Product({ product }) {
 
 
             try {
-                const api = await fetch('https://kabstore-7p9q.onrender.com/product/imgs/' + product._id, {
+                const api = await fetch('http://localhost:4000/product/imgs/' + product._id, {
                     method: 'PUT',
                     body: formData,
                 });
@@ -95,6 +127,7 @@ export default function Product({ product }) {
 
 
     return (
+
         <div id="content" class="main-content" style={{
             marginTop: "80px"
         }}>
@@ -154,7 +187,7 @@ export default function Product({ product }) {
                                 </div>
                             </div>
                         </div>
-                        {showField && <div id="product_images" class="col-lg-12 col-md-12 layout-spacing">
+                        {true && <div id="product_images" class="col-lg-12 col-md-12 layout-spacing">
                             {success && <Alert className='mt-2 mb-3' message="Images Added" type="success" style={{
                                 width: "130px",
 
@@ -273,7 +306,33 @@ export default function Product({ product }) {
 
 
                                             </div>
+                                            <div class="row mt-4" >
+                                                <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                                    <h4>Colors</h4>
+                                                    <div className="d-flex gap-4 mt-3">
+                                                        {
+                                                            product.colors.map((c, i) => {
 
+                                                                return <Button style={{
+                                                                    backgroundColor: `${c}`,
+
+                                                                }} onClick={() => showColorImage(c, product.imageColors[i])} />
+                                                            })
+                                                        }
+                                                        <Button style={{
+                                                            backgroundColor: 'green',
+                                                        }} />
+                                                    </div>
+                                                    <Modal
+                                                        title="Color Product"
+                                                        open={colorImageVisible}
+                                                        onCancel={() => setColorImageVisible(false)}
+                                                        footer={null}
+                                                    >
+                                                        <Image width="100%" src={colorImageSrc} />
+                                                    </Modal>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

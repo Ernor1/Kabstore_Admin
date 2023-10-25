@@ -3,8 +3,9 @@ import SideBar from '../../components/SideBar'
 import { useRouter } from 'next/router';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Product from '../../components/Product';
+import { useEffect, useState } from 'react';
 
-export default function ({ name, subName, products, product }) {
+export default function ({ name, subName, products, product, isInitialLoaded }) {
     console.log("These are the products", products);
     const theme = createTheme({
         status: {
@@ -24,7 +25,7 @@ export default function ({ name, subName, products, product }) {
     console.log(name, subName);
     console.log(products[0]);
     const productHeaders = ["Name", "Price", "Discount", "Category", "Status"]
-    console.log(productHeaders); const router = useRouter();
+    console.log(productHeaders);
     return (<ThemeProvider theme={theme}>
         <NavBar />
         <div class="main-container" id="container" >
@@ -32,7 +33,7 @@ export default function ({ name, subName, products, product }) {
             <div class="overlay"></div>
             <div class="search-overlay"></div>
             <SideBar name={name} subName={subName} />
-            <Product product={product} />
+            <Product product={product} isInitialLoaded={isInitialLoaded} />
 
         </div >
     </ThemeProvider>)
@@ -40,14 +41,12 @@ export default function ({ name, subName, products, product }) {
 
 export async function getServerSideProps(context) {
     const query = context.query;
-    console.log(context.params);
-    console.log(context);
     const name = query.name || null;
     const subName = query.subName || null;
     const id = query.id || null;
-    const products = await fetch('https://kabstore-7p9q.onrender.com/product')
+    const products = await fetch('http://localhost:4000/product')
         .then(response => response.json())
-    const pro = await fetch('https://kabstore-7p9q.onrender.com/product/' + context.params.productId).then(response => response.json())
+    const pro = await fetch('http://localhost:4000/product/' + context.params.productId).then(response => response.json())
     const product = pro.product
     console.log("hello", product);
     const categories = []
@@ -58,7 +57,8 @@ export async function getServerSideProps(context) {
             subName,
             products,
             categories,
-            product
+            product,
+            isInitialLoaded: true
 
         }
     }

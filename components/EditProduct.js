@@ -85,7 +85,7 @@ export default function EditProductC({ categories, product }) {
         }
 
         try {
-            const api = await fetch('https://kabstore-7p9q.onrender.com/product/', {
+            const api = await fetch(`http://localhost:4000/product/${product._id}`, {
                 method: 'PUT',
                 body: formData,
             });
