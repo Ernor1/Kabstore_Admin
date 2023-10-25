@@ -196,7 +196,7 @@ export default function Product({ product, isInitialLoaded }) {
                                 width: "130px",
 
                             }} />}
-                            <div class="statbox widget box box-shadow">
+                            {showField && <div class="statbox widget box box-shadow">
                                 <div class="widget-header">
                                     <div class="row">
                                         <div class="col-xl-12 col-md-12 col-sm-12 col-12">
@@ -246,7 +246,7 @@ export default function Product({ product, isInitialLoaded }) {
                                     </div>
 
                                 </div>
-                            </div>
+                            </div>}
                         </div>}
                         <div id="part-2" class="col-lg-12 col-md-12 layout-spacing">
                             <div class="statbox widget box box-shadow">
@@ -264,7 +264,7 @@ export default function Product({ product, isInitialLoaded }) {
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <a class="btn btn-outline-info btn-sm btn-rounded float-end mb-1  mr-2" style={{
-                                                top: "-50px",
+                                                top: "-35px",
                                                 position: "relative",
                                                 width: "60px",
                                             }} onClick={() => {
@@ -291,7 +291,11 @@ export default function Product({ product, isInitialLoaded }) {
                                                     className="mySwiper carousel-inner swip"
                                                 >
                                                     {product.pictures?.map((image, index) => {
-                                                        return <SwiperSlide class="carousel-item active">
+                                                        return <SwiperSlide style={
+                                                            {
+                                                                width: "729px"
+                                                            }
+                                                        } class="carousel-item active" >
                                                             <img class="d-block w-100" src={image} alt="F" />
                                                         </SwiperSlide>
                                                     })}
