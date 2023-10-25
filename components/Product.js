@@ -101,7 +101,7 @@ export default function Product({ product, isInitialLoaded }) {
 
 
             try {
-                const api = await fetch('http://localhost:4000/product/imgs/' + product._id, {
+                const api = await fetch('https://kabstore-7p9q.onrender.com/product/imgs/' + product._id, {
                     method: 'PUT',
                     body: formData,
                 });

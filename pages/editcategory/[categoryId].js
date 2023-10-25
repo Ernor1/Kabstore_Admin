@@ -24,7 +24,7 @@ export async function getServerSideProps(context) {
     const query = context.query;
     const name = query.name || null;
     const subName = query.subName || null;
-    const category = await fetch('http://localhost:4000/category/' + context.params.categoryId)
+    const category = await fetch('https://kabstore-7p9q.onrender.com/category/' + context.params.categoryId)
         .then(response => response.json())
 
     return {

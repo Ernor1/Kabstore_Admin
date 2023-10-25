@@ -45,7 +45,7 @@ export default function EditCategoryC({ category }) {
 
 
         try {
-            const api = await fetch(`http://localhost:4000/category/${category._id}`, {
+            const api = await fetch(`https://kabstore-7p9q.onrender.com/category/${category._id}`, {
                 method: 'PUT',
                 body: formData,
             });

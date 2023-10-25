@@ -41,7 +41,7 @@ export async function getServerSideProps(context) {
     // console.log(context);
     const name = query.name || null;
     const subName = query.subName || null;
-    const product = await fetch('http://localhost:4000/promproduct/63f2656b2dbeae2d5818d689')
+    const product = await fetch('https://kabstore-7p9q.onrender.com/promproduct/63f2656b2dbeae2d5818d689')
         .then(response => response.json())
     console.log("hello", product);
     const categories = []

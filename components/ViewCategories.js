@@ -114,7 +114,7 @@ export default function ViewCategories({ products, categoryHeaders, categories }
             await new Promise((resolve) => setTimeout(resolve, 2000));
             console.log("id", id);
 
-            const api = await fetch('http://localhost:4000/category/' + id, {
+            const api = await fetch('https://kabstore-7p9q.onrender.com/category/' + id, {
                 method: 'DELETE',
             });
             const data = await api.json();

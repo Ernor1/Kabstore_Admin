@@ -65,7 +65,7 @@ export default function CreateCategoryC() {
         formData.append('description', description);;
 
         try {
-            const api = await fetch('http://localhost:4000/category/', {
+            const api = await fetch('https://kabstore-7p9q.onrender.com/category/', {
                 method: 'POST',
                 body: formData,
             });

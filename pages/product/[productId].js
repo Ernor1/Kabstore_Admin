@@ -44,9 +44,9 @@ export async function getServerSideProps(context) {
     const name = query.name || null;
     const subName = query.subName || null;
     const id = query.id || null;
-    const products = await fetch('http://localhost:4000/product')
+    const products = await fetch('https://kabstore-7p9q.onrender.com/product')
         .then(response => response.json())
-    const pro = await fetch('http://localhost:4000/product/' + context.params.productId).then(response => response.json())
+    const pro = await fetch('https://kabstore-7p9q.onrender.com/product/' + context.params.productId).then(response => response.json())
     const product = pro.product
     console.log("hello", product);
     const categories = []

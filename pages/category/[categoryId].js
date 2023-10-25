@@ -49,7 +49,7 @@ export default function CategoryPage({ name, subName, products, category, load }
     return (
 
         <ThemeProvider theme={theme}>
-            
+
             <NavBar />
             <div className="main-container" id="container">
                 <div className="overlay"></div>
@@ -66,8 +66,8 @@ export async function getServerSideProps(context) {
     const name = query.name || null;
     const subName = query.subName || null;
     const load = query.load || false;
-    const category = await fetch('http://localhost:4000/category/' + context.params.categoryId).then(response => response.json());
-    const pro = await fetch('http://localhost:4000/product').then(response => response.json());
+    const category = await fetch('https://kabstore-7p9q.onrender.com/category/' + context.params.categoryId).then(response => response.json());
+    const pro = await fetch('https://kabstore-7p9q.onrender.com/product').then(response => response.json());
 
     console.log(category, "from categories");
     const products = pro.filter(

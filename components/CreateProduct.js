@@ -140,7 +140,7 @@ export default function CreateProductC({ categories }) {
         }
 
         try {
-            const api = await fetch('http://localhost:4000/product', {
+            const api = await fetch('https://kabstore-7p9q.onrender.com/product', {
                 method: 'POST',
                 body: formData,
             });
