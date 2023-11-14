@@ -173,13 +173,7 @@ export default function EditProductC({ categories, product }) {
                                                     }
                                                     )
                                                     }
-                                                    {/* <?php
 
-                                                    $query = mysqli_query($connection, "SELECT * FROM  categories") or die(mysqli_error($connection));
-
-                                                    while ($data = mysqli_fetch_assoc($query)) { ?>
-                                                        <option value="<?php print $data["category_id"]; ?>"><?php print $data["category_name"]; ?></option>
-                                                    <?php } ?> */}
                                                 </select>
                                             </div>
                                         </div>

@@ -14,7 +14,7 @@ import 'swiper/swiper-bundle.css';
 import { Autoplay, Pagination, Navigation } from 'swiper';
 import { useRouter } from 'next/router';
 
-export default function Product({ product, isInitialLoaded }) {
+export default function Product({ product }) {
     const [showField, setShowField] = useState(false);
     const [progress, setProgress] = useState(false);
     const [selectedColor, setSelectedColor] = useState('');
@@ -23,19 +23,11 @@ export default function Product({ product, isInitialLoaded }) {
     const [colorImageVisible, setColorImageVisible] = useState(false);
     const [colorImageSrc, setColorImageSrc] = useState('');
     const router = useRouter();
-
-    useEffect(() => {
-        if (isInitialLoaded && typeof window !== 'undefined') {
-            const hasPageReloaded = sessionStorage.getItem('hasPageReloaded');
-
-            if (!hasPageReloaded) {
-                sessionStorage.setItem('hasPageReloaded', 'true');
+    const refreshData = () => {
+        router.replace(router.asPath);
+    };
 
 
-                router.push(router.asPath);
-            }
-        }
-    }, [router, isInitialLoaded]);
 
 
 
@@ -60,10 +52,6 @@ export default function Product({ product, isInitialLoaded }) {
     }
 
     const [fileList, setFileList] = useState(picArr)
-
-
-
-        ;
     const onChange = ({ fileList: newFileList }) => {
         setFileList(newFileList);
         console.log("This is the added file", newFileList);
@@ -109,11 +97,12 @@ export default function Product({ product, isInitialLoaded }) {
                 if (data) {
                     message.success("Images Uploaded Successfully")
                     setProgress(false);
+                    refreshData()
                 }
             } catch (err) {
                 setProgress(false);
-                message.error("Error Uploading Images")
-                console.log(err);
+                message.error(err, "Error Uploading Images")
+                console.log(err, "This is the error");
             }
         }
         else {
@@ -221,7 +210,7 @@ export default function Product({ product, isInitialLoaded }) {
                                                         onChange={onChange}
                                                         onPreview={onPreview}
                                                     >
-                                                        {fileList.length < 5 && '+ Upload'}
+                                                        {fileList.length < 15 && '+ Upload'}
                                                     </Upload>
                                                 </ImgCrop>
                                             </div>
@@ -295,7 +284,7 @@ export default function Product({ product, isInitialLoaded }) {
                                                             {
                                                                 width: "729px"
                                                             }
-                                                        } class="carousel-item active" >
+                                                        } class="carousel-item active swiper-slide" >
                                                             <img class="d-block w-100" src={image} alt="F" />
                                                         </SwiperSlide>
                                                     })}
@@ -323,9 +312,6 @@ export default function Product({ product, isInitialLoaded }) {
                                                                 }} onClick={() => showColorImage(c, product.imageColors[i])} />
                                                             })
                                                         }
-                                                        <Button style={{
-                                                            backgroundColor: 'green',
-                                                        }} />
                                                     </div>
                                                     <Modal
                                                         title="Color Product"

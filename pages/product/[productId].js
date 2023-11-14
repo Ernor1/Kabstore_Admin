@@ -33,7 +33,7 @@ export default function ({ name, subName, products, product, isInitialLoaded }) 
             <div class="overlay"></div>
             <div class="search-overlay"></div>
             <SideBar name={name} subName={subName} />
-            <Product product={product} isInitialLoaded={isInitialLoaded} />
+            <Product product={product} />
 
         </div >
     </ThemeProvider>)
@@ -57,8 +57,7 @@ export async function getServerSideProps(context) {
             subName,
             products,
             categories,
-            product,
-            isInitialLoaded: true
+            product
 
         }
     }
